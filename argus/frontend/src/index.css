@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', 'Noto Sans Devanagari', system-ui, sans-serif;
+    @apply antialiased text-argus-text bg-argus-bg;
+  }
+  body {
+    @apply bg-argus-bg text-argus-text selection:bg-argus-accent/30 selection:text-white min-h-screen relative;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-argus-silver/15 rounded-full hover:bg-argus-silver/25 transition-colors;
+  }
+
+  :focus-visible {
+    outline: 2px solid #B32A63;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Ambient background wash — premium burgundy/silver, quiet and executive */
+  .argus-ground {
+    background-image:
+      radial-gradient(ellipse 1400px 700px at 10% -15%, rgba(140,29,77,0.14), transparent 60%),
+      radial-gradient(ellipse 1000px 900px at 100% 0%, rgba(184,188,196,0.06), transparent 60%),
+      radial-gradient(ellipse 900px 700px at 50% 110%, rgba(140,29,77,0.08), transparent 60%);
+  }
+
+  /* Glass panel — the core card primitive across the app */
+  .panel {
+    @apply bg-argus-card/80 backdrop-blur-xl border border-argus-line rounded-xl shadow-elevate shadow-inset-sheen;
+  }
+  .panel-solid {
+    @apply bg-argus-card border border-argus-line rounded-xl shadow-elevate shadow-inset-sheen;
+  }
+
+  /* KPI / executive metric card */
+  .kpi-card {
+    @apply panel p-5 relative overflow-hidden transition-all duration-300 hover:border-argus-accent/30 hover:shadow-elevate-lg;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(179,42,99,0.6), rgba(184,188,196,0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .kpi-card:hover::before {
+    opacity: 1;
+  }
+
+  .eyebrow {
+    @apply font-mono text-[10px] uppercase tracking-[0.14em] text-argus-text-faint font-medium;
+  }
+
+  /* Gradient brand text — burgundy to silver sheen */
+  .text-brand-gradient {
+    background-image: linear-gradient(120deg, #D8DBE0 0%, #E9A5C0 35%, #8C1D4D 75%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Badges — compact, semantic, consistent across severity/status/priority */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[11px] font-semibold uppercase tracking-wide;
+  }
+  .badge-critical { @apply border-argus-critical/30 text-argus-critical bg-argus-critical/10; }
+  .badge-warning  { @apply border-argus-warning/30 text-argus-warning bg-argus-warning/10; }
+  .badge-success  { @apply border-argus-success/30 text-argus-success bg-argus-success/10; }
+  .badge-info     { @apply border-argus-silver/30 text-argus-silver-bright bg-argus-silver/10; }
+  .badge-neutral  { @apply border-white/15 text-argus-text-secondary bg-white/[0.04]; }
+  .badge-accent   { @apply border-argus-accent-bright/40 text-argus-accent-bright bg-argus-accent/15; }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 text-white font-semibold rounded-lg px-4 py-2.5 transition-all duration-200 hover:shadow-glow-accent active:brightness-95 disabled:opacity-40 disabled:pointer-events-none;
+    background-image: linear-gradient(135deg, #8C1D4D 0%, #6B1339 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 4px 12px -4px rgba(140,29,77,0.5);
+  }
+  .btn-primary:hover {
+    background-image: linear-gradient(135deg, #A32259 0%, #7A1740 100%);
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-white/[0.04] border border-argus-line text-argus-text-secondary font-medium rounded-lg px-4 py-2.5 transition-all duration-200 hover:bg-argus-silver/[0.08] hover:border-argus-silver/30 hover:text-argus-text disabled:opacity-40 disabled:pointer-events-none;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 text-argus-text-secondary font-medium rounded-lg px-3 py-2 transition-colors duration-200 hover:bg-white/[0.06] hover:text-argus-text disabled:opacity-40 disabled:pointer-events-none;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 bg-argus-critical/10 border border-argus-critical/30 text-argus-critical font-medium rounded-lg px-4 py-2.5 transition-all duration-200 hover:bg-argus-critical/20 disabled:opacity-40 disabled:pointer-events-none;
+  }
+
+  .input-field {
+    @apply w-full bg-white/[0.03] border border-argus-line rounded-lg py-2.5 px-3.5 text-sm text-argus-text placeholder-argus-text-faint focus:outline-none focus:border-argus-accent-bright/60 focus:bg-white/[0.05] transition-all;
+  }
+
+  /* Skeleton loading shimmer */
+  .skeleton {
+    @apply bg-white/[0.06] rounded-md relative overflow-hidden;
+    background-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    background-size: 1000px 100%;
+  }
+  .skeleton-shimmer {
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+
+  /* Live status dot */
+  .live-dot {
+    @apply w-1.5 h-1.5 rounded-full bg-argus-success;
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+
+  /* Table primitives */
+  .data-table th {
+    @apply px-4 py-3 text-left eyebrow bg-argus-bg2/60 border-b border-argus-line sticky top-0 z-10 backdrop-blur-sm;
+  }
+  .data-table td {
+    @apply px-4 py-3 text-sm text-argus-text-secondary border-b border-argus-line/60;
+  }
+  .data-table tr:hover td {
+    @apply bg-white/[0.02];
+  }
+}

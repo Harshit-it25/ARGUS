@@ -1,0 +1,10 @@
+{
+  "name": "argus-adv",
+  "version": "1.0.0",
+  "description": "Root package.json to forward commands",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "install:frontend": "npm install --prefix frontend"
+  }
+}

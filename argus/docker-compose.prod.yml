@@ -1,0 +1,68 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_URL=/api
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      # No fallback default: SECRET_KEY must be provided via a real env var
+      # or secrets manager. config.py refuses to boot in production if this
+      # is unset or still the known dev value — but that guard is worthless
+      # if this file quietly substitutes another known, guessable default.
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set to a strong unique value for production}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:?POSTGRES_USER must be set}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}@postgres:5432/${POSTGRES_DB:-argus_db}
+      - CHROMADB_HOST=chromadb
+      - CHROMADB_PORT=8001
+      - LLM_PROVIDER=gemini
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      # Demo seeding creates known credentials (admin@argus.demo/admin123)
+      # and must stay off in production; config.py also hard-refuses to
+      # boot if this is left true, as a second line of defense.
+      - DEMO_SEED_DATA=False
+    depends_on:
+      postgres:
+        condition: service_healthy
+      chromadb:
+        condition: service_started
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:?POSTGRES_USER must be set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+      - POSTGRES_DB=${POSTGRES_DB:-argus_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations/init.sql:/docker-entrypoint-initdb.d/01_init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB:-argus_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  chromadb:
+    image: chromadb/chroma:0.5.5
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+
+volumes:
+  postgres_data:
+  chroma_data:

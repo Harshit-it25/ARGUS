@@ -1,0 +1,10 @@
+{
+  "name": "argus_premium_theme_root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd argus_fixed/frontend && npm run dev",
+    "install:frontend": "cd argus_fixed/frontend && npm install",
+    "build": "cd argus_fixed/frontend && npm run build"
+  }
+}
