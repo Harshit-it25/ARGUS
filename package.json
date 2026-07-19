@@ -1,10 +1,10 @@
 {
-  "name": "argus_premium_theme_root",
+  "name": "argus-adv",
   "version": "1.0.0",
-  "private": true,
+  "description": "Root package.json to forward commands",
   "scripts": {
-    "dev": "cd argus_fixed/frontend && npm run dev",
-    "install:frontend": "cd argus_fixed/frontend && npm install",
-    "build": "cd argus_fixed/frontend && npm run build"
+    "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "install:frontend": "npm install --prefix frontend"
   }
 }
